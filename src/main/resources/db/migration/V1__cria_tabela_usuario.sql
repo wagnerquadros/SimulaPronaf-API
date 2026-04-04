@@ -1,0 +1,8 @@
+CREATE TABLE usuario (
+    id BIGSERIAL PRIMARY KEY,
+    nome VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    google_subject VARCHAR(100) NOT NULL UNIQUE,
+    ativo BOOLEAN NOT NULL DEFAULT TRUE,
+    data_criacao TIMESTAMP NOT NULL
+);
