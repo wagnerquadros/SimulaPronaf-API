@@ -5,6 +5,7 @@ import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioResponseDto;
 import com.wagnerquadros.simulapronaf.usuarios.entity.Usuario;
 import com.wagnerquadros.simulapronaf.usuarios.service.UsuarioService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,12 +26,12 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public UsuarioResponseDto buscarPorId(@PathVariable Long id) {
-        return usuarioService.buscarPorId(id);
+    public ResponseEntity<UsuarioResponseDto> buscarPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(usuarioService.buscarPorId(id));
     }
 
     @PostMapping("/google")
-    public UsuarioResponseDto buscarOuCriarUsuarioGoogle(@Valid @RequestBody UsuarioGoogleRequestDto usuarioDto) {
-        return usuarioService.buscarOuCriarUsuarioGoogle(usuarioDto);
+    public ResponseEntity<UsuarioResponseDto> buscarOuCriarUsuarioGoogle(@Valid @RequestBody UsuarioGoogleRequestDto usuarioDto) {
+        return ResponseEntity.ok(usuarioService.buscarOuCriarUsuarioGoogle(usuarioDto));
     }
 }
