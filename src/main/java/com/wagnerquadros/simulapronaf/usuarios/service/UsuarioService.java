@@ -4,9 +4,10 @@ import com.wagnerquadros.simulapronaf.infraestrutura.exception.RecursoNaoEncontr
 import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioGoogleRequestDto;
 import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioResponseDto;
 import com.wagnerquadros.simulapronaf.usuarios.entity.Usuario;
+import com.wagnerquadros.simulapronaf.usuarios.mapper.UsuarioMapper;
 import com.wagnerquadros.simulapronaf.usuarios.repository.UsuarioRepository;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,16 +16,18 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
         this.usuarioRepository = usuarioRepository;
+        this.usuarioMapper = usuarioMapper;
     }
 
     @Transactional(readOnly = true)
     public List<UsuarioResponseDto> listarTodos() {
         return usuarioRepository.findAll()
                 .stream()
-                .map(this::converterParaResponseDto)
+                .map(usuarioMapper::converterParaDto)
                 .toList();
     }
 
@@ -33,7 +36,7 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com id: " + id));
 
-        return converterParaResponseDto(usuario);
+        return usuarioMapper.converterParaDto(usuario);
     }
 
     @Transactional(readOnly = true)
@@ -48,7 +51,7 @@ public class UsuarioService {
                 .map(usuarioExistente -> atualizarDadosSeNecessario(usuarioExistente, usuarioDto))
                 .orElseGet(() -> criarUsuario(usuarioDto));
 
-        return converterParaResponseDto(usuario);
+        return usuarioMapper.converterParaDto(usuario);
     }
 
     private Usuario criarUsuario(UsuarioGoogleRequestDto usuarioDto) {
@@ -80,15 +83,5 @@ public class UsuarioService {
         }
 
         return usuario;
-    }
-
-    private UsuarioResponseDto converterParaResponseDto(Usuario usuario) {
-        return new UsuarioResponseDto(
-                usuario.getId(),
-                usuario.getNome(),
-                usuario.getEmail(),
-                usuario.getAtivo(),
-                usuario.getDataCriacao()
-        );
     }
 }

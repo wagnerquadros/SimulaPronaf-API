@@ -52,4 +52,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(resposta);
     }
 
+    @ExceptionHandler(NaoAutorizadoException.class)
+    public ResponseEntity<Map<String, Object>> tratarNaoAutorizado(NaoAutorizadoException ex) {
+        Map<String, Object> resposta = new HashMap<>();
+        resposta.put("timestamp", LocalDateTime.now());
+        resposta.put("status", HttpStatus.UNAUTHORIZED.value());
+        resposta.put("erro", "Não autorizado");
+        resposta.put("mensagem", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resposta);
+    }
+
 }
