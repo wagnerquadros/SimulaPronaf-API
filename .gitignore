@@ -1,8 +1,23 @@
 HELP.md
+
+### Maven / build ###
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+.mvn/wrapper/maven-wrapper.jar
+
+### Chaves e segredos ###
+src/main/resources/certs/app.key
+src/main/resources/certs/*.pem
+src/main/resources/certs/*.p12
+src/main/resources/certs/*.jks
+src/main/resources/certs/*.keystore
+.env
+.env.*
+application-local.properties
+application-local.yml
+application-secrets.properties
+application-secrets.yml
 
 ### STS ###
 .apt_generated
@@ -14,10 +29,11 @@ target/
 .sts4-cache
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
+out/
 
 ### NetBeans ###
 /nbproject/private/
@@ -25,9 +41,15 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### Gradle ###
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
 ### VS Code ###
 .vscode/
+
+### Sistema operacional ###
+.DS_Store
+Thumbs.db
