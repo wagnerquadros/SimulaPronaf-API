@@ -12,12 +12,15 @@ public class AutenticacaoService {
 
     private final UsuarioService usuarioService;
     private final ValidadorTokenGoogleService validadorTokenGoogleService;
+    private final JwtService jwtService;
 
     public AutenticacaoService(
             UsuarioService usuarioService,
-            ValidadorTokenGoogleService validadorTokenGoogleService) {
+            ValidadorTokenGoogleService validadorTokenGoogleService,
+            JwtService jwtService) {
         this.usuarioService = usuarioService;
         this.validadorTokenGoogleService = validadorTokenGoogleService;
+        this.jwtService = jwtService;
     }
 
     public LoginResponseDto autenticarComGoogle(LoginGoogleRequestDto loginDto) {
@@ -28,11 +31,16 @@ public class AutenticacaoService {
         UsuarioResponseDto usuarioResponseDto =
                 usuarioService.buscarOuCriarUsuarioGoogle(usuarioGoogleRequestDto);
 
+        String accessToken = jwtService.gerarToken(usuarioResponseDto.email());
+
         return new LoginResponseDto(
                 usuarioResponseDto.id(),
                 usuarioResponseDto.nome(),
                 usuarioResponseDto.email(),
-                true
+                true,
+                accessToken,
+                "Bearer",
+                jwtService.getExpiracaoEmSegundos()
         );
     }
 }

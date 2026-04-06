@@ -4,6 +4,9 @@ public record LoginResponseDto(
         Long id,
         String nome,
         String email,
-        Boolean autenticado
+        Boolean autenticado,
+        String accessToken,
+        String tokenType,
+        Long expiresIn
 ) {
 }
