@@ -15,7 +15,7 @@ public class JwtService {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String gerarToken(String email) {
+    public String gerarToken(Long usuarioId) {
         Instant agora = Instant.now();
         long expiracaoEmSegundos = 60 * 60; // 1 hora
 
@@ -23,7 +23,7 @@ public class JwtService {
                 .issuer("simulapronaf-api")
                 .issuedAt(agora)
                 .expiresAt(agora.plusSeconds(expiracaoEmSegundos))
-                .subject(email)
+                .subject(String.valueOf(usuarioId))
                 .claim("scope", "USER")
                 .build();
 

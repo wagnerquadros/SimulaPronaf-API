@@ -31,7 +31,7 @@ public class AutenticacaoService {
         UsuarioResponseDto usuarioResponseDto =
                 usuarioService.buscarOuCriarUsuarioGoogle(usuarioGoogleRequestDto);
 
-        String accessToken = jwtService.gerarToken(usuarioResponseDto.email());
+        String accessToken = jwtService.gerarToken(usuarioResponseDto.id());
 
         return new LoginResponseDto(
                 usuarioResponseDto.id(),

@@ -1,11 +1,13 @@
 package com.wagnerquadros.simulapronaf.usuarios.controller;
 
+
 import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioGoogleRequestDto;
 import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioResponseDto;
-import com.wagnerquadros.simulapronaf.usuarios.entity.Usuario;
 import com.wagnerquadros.simulapronaf.usuarios.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,14 +22,10 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
-    @GetMapping
-    public List<UsuarioResponseDto> listarTodos() {
-        return usuarioService.listarTodos();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponseDto> buscarPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(usuarioService.buscarPorId(id));
+    @GetMapping("/me")
+    public ResponseEntity<UsuarioResponseDto> buscarUsuarioLogado(@AuthenticationPrincipal Jwt jwt) {
+        Long usuarioId = Long.valueOf(jwt.getSubject());
+        return ResponseEntity.ok(usuarioService.buscarPorId(usuarioId));
     }
 
     @PostMapping("/google")

@@ -24,14 +24,6 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public List<UsuarioResponseDto> listarTodos() {
-        return usuarioRepository.findAll()
-                .stream()
-                .map(usuarioMapper::converterParaDto)
-                .toList();
-    }
-
-    @Transactional(readOnly = true)
     public UsuarioResponseDto buscarPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado com id: " + id));
