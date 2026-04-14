@@ -4,7 +4,6 @@ import com.wagnerquadros.simulapronaf.credito.dto.ItemLinhaCreditoResponseDto;
 import com.wagnerquadros.simulapronaf.credito.dto.LinhaCreditoResponseDto;
 import com.wagnerquadros.simulapronaf.credito.dto.LinhaCreditoResumoResponseDto;
 import com.wagnerquadros.simulapronaf.credito.entity.LinhaCredito;
-import com.wagnerquadros.simulapronaf.infraestrutura.mapper.EntityMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -1,10 +1,10 @@
-package com.wagnerquadros.simulapronaf.usuarios.dto;
+package com.wagnerquadros.simulapronaf.autenticacao.dto;
 
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record UsuarioGoogleRequestDto(
+public record UsuarioGoogleDto(
 
         @NotBlank(message = "O nome é obrigatório.")
         String nome,

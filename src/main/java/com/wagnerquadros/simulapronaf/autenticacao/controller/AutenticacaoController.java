@@ -3,6 +3,7 @@ package com.wagnerquadros.simulapronaf.autenticacao.controller;
 import com.wagnerquadros.simulapronaf.autenticacao.dto.LoginGoogleRequestDto;
 import com.wagnerquadros.simulapronaf.autenticacao.dto.LoginResponseDto;
 import com.wagnerquadros.simulapronaf.autenticacao.service.AutenticacaoService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ public class AutenticacaoController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<LoginResponseDto> autenticarComGoogle(@RequestBody LoginGoogleRequestDto loginDto) {
+    public ResponseEntity<LoginResponseDto> autenticarComGoogle(@Valid @RequestBody LoginGoogleRequestDto loginDto) {
         return ResponseEntity.ok(autenticacaoService.autenticarComGoogle(loginDto));
     }
 }
