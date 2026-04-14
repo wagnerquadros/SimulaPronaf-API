@@ -1,12 +1,14 @@
 package com.wagnerquadros.simulapronaf.infraestrutura.exception;
 
+import com.wagnerquadros.simulapronaf.infraestrutura.exception.dto.ErroRespostaDto;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,53 +16,72 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(RecursoNaoEncontradoException.class)
-    public ResponseEntity<Map<String, Object>> tratarRecursoNaoEncontrado(RecursoNaoEncontradoException ex) {
-        Map<String, Object> resposta = new HashMap<>();
-        resposta.put("timestamp", LocalDateTime.now());
-        resposta.put("status", HttpStatus.NOT_FOUND.value());
-        resposta.put("erro", "Recurso não encontrado");
-        resposta.put("mensagem", ex.getMessage());
-
+    public ResponseEntity<ErroRespostaDto> tratarRecursoNaoEncontrado(
+            RecursoNaoEncontradoException ex,
+            HttpServletRequest request
+    ) {
+        ErroRespostaDto resposta = new ErroRespostaDto(
+                request.getRequestURI(),
+                "Recurso não encontrado",
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                OffsetDateTime.now(),
+                null
+        );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
     }
 
     @ExceptionHandler(RegraDeNegocioException.class)
-    public ResponseEntity<Map<String, Object>> tratarRegraDeNegocio(RegraDeNegocioException ex) {
-        Map<String, Object> resposta = new HashMap<>();
-        resposta.put("timestamp", LocalDateTime.now());
-        resposta.put("status", HttpStatus.BAD_REQUEST.value());
-        resposta.put("erro", "Regra de negócio");
-        resposta.put("mensagem", ex.getMessage());
-
+    public ResponseEntity<ErroRespostaDto> tratarRegraDeNegocio(
+            RegraDeNegocioException ex,
+            HttpServletRequest request
+    ) {
+        ErroRespostaDto resposta = new ErroRespostaDto(
+                request.getRequestURI(),
+                "Regra de negócio",
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                OffsetDateTime.now(),
+                null
+        );
         return ResponseEntity.badRequest().body(resposta);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> tratarValidacao(MethodArgumentNotValidException ex) {
-        Map<String, Object> erros = new HashMap<>();
+    public ResponseEntity<ErroRespostaDto> tratarValidacao(
+            MethodArgumentNotValidException ex,
+            HttpServletRequest request
+    ) {
+        Map<String, String> erros = new HashMap<>();
 
         ex.getBindingResult().getFieldErrors().forEach(erro ->
                 erros.put(erro.getField(), erro.getDefaultMessage())
         );
 
-        Map<String, Object> resposta = new HashMap<>();
-        resposta.put("timestamp", LocalDateTime.now());
-        resposta.put("status", HttpStatus.BAD_REQUEST.value());
-        resposta.put("erro", "Erro de validação");
-        resposta.put("campos", erros);
-
+        ErroRespostaDto resposta = new ErroRespostaDto(
+                request.getRequestURI(),
+                "Erro de validação",
+                "Um ou mais campos estão inválidos.",
+                HttpStatus.BAD_REQUEST.value(),
+                OffsetDateTime.now(),
+                erros
+        );
         return ResponseEntity.badRequest().body(resposta);
     }
 
     @ExceptionHandler(NaoAutorizadoException.class)
-    public ResponseEntity<Map<String, Object>> tratarNaoAutorizado(NaoAutorizadoException ex) {
-        Map<String, Object> resposta = new HashMap<>();
-        resposta.put("timestamp", LocalDateTime.now());
-        resposta.put("status", HttpStatus.UNAUTHORIZED.value());
-        resposta.put("erro", "Não autorizado");
-        resposta.put("mensagem", ex.getMessage());
-
+    public ResponseEntity<ErroRespostaDto> tratarNaoAutorizado(
+            NaoAutorizadoException ex,
+            HttpServletRequest request
+    ) {
+        ErroRespostaDto resposta = new ErroRespostaDto(
+                request.getRequestURI(),
+                "Não autorizado",
+                ex.getMessage(),
+                HttpStatus.UNAUTHORIZED.value(),
+                OffsetDateTime.now(),
+                null
+        );
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resposta);
     }
-
 }

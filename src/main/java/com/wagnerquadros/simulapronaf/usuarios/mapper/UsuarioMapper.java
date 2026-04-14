@@ -6,7 +6,7 @@ import com.wagnerquadros.simulapronaf.usuarios.entity.Usuario;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UsuarioMapper implements EntityMapper<Usuario, UsuarioResponseDto>  {
+public class UsuarioMapper implements EntityMapper<Usuario, UsuarioResponseDto> {
 
     @Override
     public UsuarioResponseDto converterParaDto(Usuario usuario) {

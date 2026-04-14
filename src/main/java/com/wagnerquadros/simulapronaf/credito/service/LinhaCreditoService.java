@@ -3,7 +3,6 @@ package com.wagnerquadros.simulapronaf.credito.service;
 import com.wagnerquadros.simulapronaf.credito.dto.ItemLinhaCreditoResponseDto;
 import com.wagnerquadros.simulapronaf.credito.dto.LinhaCreditoResponseDto;
 import com.wagnerquadros.simulapronaf.credito.dto.LinhaCreditoResumoResponseDto;
-import com.wagnerquadros.simulapronaf.credito.entity.ItemLinhaCredito;
 import com.wagnerquadros.simulapronaf.credito.entity.LinhaCredito;
 import com.wagnerquadros.simulapronaf.credito.enums.TipoLinhaCredito;
 import com.wagnerquadros.simulapronaf.credito.mapper.ItemLinhaCreditoMapper;
@@ -74,5 +73,4 @@ public class LinhaCreditoService {
                 itens
         );
     }
-
 }

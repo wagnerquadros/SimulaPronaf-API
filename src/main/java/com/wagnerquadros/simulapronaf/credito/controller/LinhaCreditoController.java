@@ -24,8 +24,8 @@ public class LinhaCreditoController {
             @RequestParam(required = false) TipoLinhaCredito tipo
     ) {
         if (tipo != null)
-            return  ResponseEntity.ok(linhaCreditoService.listarPorTipo(tipo));
-        return  ResponseEntity.ok(linhaCreditoService.listarTodas());
+            return ResponseEntity.ok(linhaCreditoService.listarPorTipo(tipo));
+        return ResponseEntity.ok(linhaCreditoService.listarTodas());
     }
 
     @GetMapping("/{id}")

@@ -1,7 +1,7 @@
 package com.wagnerquadros.simulapronaf.usuarios.service;
 
+import com.wagnerquadros.simulapronaf.autenticacao.dto.UsuarioGoogleDto;
 import com.wagnerquadros.simulapronaf.infraestrutura.exception.RecursoNaoEncontradoException;
-import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioGoogleRequestDto;
 import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioResponseDto;
 import com.wagnerquadros.simulapronaf.usuarios.entity.Usuario;
 import com.wagnerquadros.simulapronaf.usuarios.mapper.UsuarioMapper;
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class UsuarioService {
@@ -21,14 +20,6 @@ public class UsuarioService {
     public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioMapper = usuarioMapper;
-    }
-
-    @Transactional(readOnly = true)
-    public List<UsuarioResponseDto> listarTodos() {
-        return usuarioRepository.findAll()
-                .stream()
-                .map(usuarioMapper::converterParaDto)
-                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +37,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponseDto buscarOuCriarUsuarioGoogle(UsuarioGoogleRequestDto usuarioDto) {
+    public UsuarioResponseDto buscarOuCriarUsuarioGoogle(UsuarioGoogleDto usuarioDto) {
         Usuario usuario = usuarioRepository.findByGoogleSubject(usuarioDto.googleSubject())
                 .map(usuarioExistente -> atualizarDadosSeNecessario(usuarioExistente, usuarioDto))
                 .orElseGet(() -> criarUsuario(usuarioDto));
@@ -54,7 +45,7 @@ public class UsuarioService {
         return usuarioMapper.converterParaDto(usuario);
     }
 
-    private Usuario criarUsuario(UsuarioGoogleRequestDto usuarioDto) {
+    private Usuario criarUsuario(UsuarioGoogleDto usuarioDto) {
         Usuario usuario = new Usuario();
         usuario.setNome(usuarioDto.nome());
         usuario.setEmail(usuarioDto.email());
@@ -65,7 +56,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    private Usuario atualizarDadosSeNecessario(Usuario usuario, UsuarioGoogleRequestDto usuarioDto) {
+    private Usuario atualizarDadosSeNecessario(Usuario usuario, UsuarioGoogleDto usuarioDto) {
         boolean alterou = false;
 
         if (!usuario.getNome().equals(usuarioDto.nome())) {

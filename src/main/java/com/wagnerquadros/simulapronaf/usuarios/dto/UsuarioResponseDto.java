@@ -1,6 +1,5 @@
 package com.wagnerquadros.simulapronaf.usuarios.dto;
 
-
 import java.time.LocalDateTime;
 
 public record UsuarioResponseDto(
