@@ -4,6 +4,7 @@ import com.wagnerquadros.simulapronaf.infraestrutura.exception.dto.ErroRespostaD
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -83,5 +84,22 @@ public class GlobalExceptionHandler {
                 null
         );
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resposta);
+    }
+
+    // GlobalExceptionHandler.java — adicione este handler
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErroRespostaDto> tratarMensagemIlegivel(
+            HttpMessageNotReadableException ex,
+            HttpServletRequest request
+    ) {
+        ErroRespostaDto resposta = new ErroRespostaDto(
+                request.getRequestURI(),
+                "Requisição inválida",
+                "O corpo da requisição está ausente ou malformado.",
+                HttpStatus.BAD_REQUEST.value(),
+                OffsetDateTime.now(),
+                null
+        );
+        return ResponseEntity.badRequest().body(resposta);
     }
 }

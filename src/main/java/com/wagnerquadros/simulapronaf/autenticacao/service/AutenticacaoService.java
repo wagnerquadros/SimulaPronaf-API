@@ -2,7 +2,7 @@ package com.wagnerquadros.simulapronaf.autenticacao.service;
 
 import com.wagnerquadros.simulapronaf.autenticacao.dto.LoginGoogleRequestDto;
 import com.wagnerquadros.simulapronaf.autenticacao.dto.LoginResponseDto;
-import com.wagnerquadros.simulapronaf.autenticacao.dto.UsuarioGoogleDto;
+import com.wagnerquadros.simulapronaf.autenticacao.dto.DadosUsuarioGoogleDto;
 import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioResponseDto;
 import com.wagnerquadros.simulapronaf.usuarios.service.UsuarioService;
 import org.springframework.stereotype.Service;
@@ -25,11 +25,11 @@ public class AutenticacaoService {
 
     public LoginResponseDto autenticarComGoogle(LoginGoogleRequestDto loginDto) {
 
-        UsuarioGoogleDto usuarioGoogleDto =
+        DadosUsuarioGoogleDto dadosUsuarioGoogleDto =
                 validadorTokenGoogleService.validarEExtrairUsuario(loginDto.idToken());
 
         UsuarioResponseDto usuarioResponseDto =
-                usuarioService.buscarOuCriarUsuarioGoogle(usuarioGoogleDto);
+                usuarioService.buscarOuCriarUsuarioGoogle(dadosUsuarioGoogleDto);
 
         String accessToken = jwtService.gerarToken(
                 usuarioResponseDto.id(),
