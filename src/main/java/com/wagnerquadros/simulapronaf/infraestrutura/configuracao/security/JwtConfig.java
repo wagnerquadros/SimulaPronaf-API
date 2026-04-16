@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.util.FileCopyUtils;
 
 import java.nio.charset.StandardCharsets;
@@ -70,7 +67,9 @@ public class JwtConfig {
 
     @Bean
     public JwtDecoder jwtDecoder(RSAPublicKey publicKey) {
-        return NimbusJwtDecoder.withPublicKey(publicKey).build();
+        NimbusJwtDecoder decoder = NimbusJwtDecoder.withPublicKey(publicKey).build();
+        decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer("simulapronaf-api"));
+        return decoder;
     }
 
     @Bean

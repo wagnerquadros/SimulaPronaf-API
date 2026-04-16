@@ -1,6 +1,6 @@
 package com.wagnerquadros.simulapronaf.usuarios.service;
 
-import com.wagnerquadros.simulapronaf.autenticacao.dto.UsuarioGoogleDto;
+import com.wagnerquadros.simulapronaf.autenticacao.dto.DadosUsuarioGoogleDto;
 import com.wagnerquadros.simulapronaf.infraestrutura.exception.RecursoNaoEncontradoException;
 import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioResponseDto;
 import com.wagnerquadros.simulapronaf.usuarios.entity.Usuario;
@@ -37,7 +37,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public UsuarioResponseDto buscarOuCriarUsuarioGoogle(UsuarioGoogleDto usuarioDto) {
+    public UsuarioResponseDto buscarOuCriarUsuarioGoogle(DadosUsuarioGoogleDto usuarioDto) {
         Usuario usuario = usuarioRepository.findByGoogleSubject(usuarioDto.googleSubject())
                 .map(usuarioExistente -> atualizarDadosSeNecessario(usuarioExistente, usuarioDto))
                 .orElseGet(() -> criarUsuario(usuarioDto));
@@ -45,7 +45,7 @@ public class UsuarioService {
         return usuarioMapper.converterParaDto(usuario);
     }
 
-    private Usuario criarUsuario(UsuarioGoogleDto usuarioDto) {
+    private Usuario criarUsuario(DadosUsuarioGoogleDto usuarioDto) {
         Usuario usuario = new Usuario();
         usuario.setNome(usuarioDto.nome());
         usuario.setEmail(usuarioDto.email());
@@ -56,7 +56,7 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    private Usuario atualizarDadosSeNecessario(Usuario usuario, UsuarioGoogleDto usuarioDto) {
+    private Usuario atualizarDadosSeNecessario(Usuario usuario, DadosUsuarioGoogleDto usuarioDto) {
         boolean alterou = false;
 
         if (!usuario.getNome().equals(usuarioDto.nome())) {
@@ -75,4 +75,8 @@ public class UsuarioService {
 
         return usuario;
     }
+
+
+
+
 }

@@ -1,5 +1,6 @@
 package com.wagnerquadros.simulapronaf.usuarios.controller;
 
+import com.wagnerquadros.simulapronaf.infraestrutura.exception.NaoAutorizadoException;
 import com.wagnerquadros.simulapronaf.usuarios.dto.UsuarioResponseDto;
 import com.wagnerquadros.simulapronaf.usuarios.service.UsuarioService;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,19 @@ public class UsuarioController {
 
     @GetMapping("/me")
     public ResponseEntity<UsuarioResponseDto> buscarUsuarioLogado(@AuthenticationPrincipal Jwt jwt) {
-        Long usuarioId = Long.valueOf(jwt.getSubject());
+
+        if (jwt == null || jwt.getSubject() == null || jwt.getSubject().isBlank()) {
+            throw new NaoAutorizadoException("Token inválido: identificador do usuário ausente.");
+        }
+
+        Long usuarioId;
+
+        try {
+            usuarioId = Long.valueOf(jwt.getSubject());
+        } catch (NumberFormatException e) {
+            throw new NaoAutorizadoException("Token inválido: identificador do usuário malformado.");
+        }
+
         return ResponseEntity.ok(usuarioService.buscarPorId(usuarioId));
     }
 }
