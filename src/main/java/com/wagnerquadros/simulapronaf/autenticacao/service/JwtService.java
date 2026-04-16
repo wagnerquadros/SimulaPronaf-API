@@ -33,7 +33,9 @@ public class JwtService {
                 .claim("email", email)
                 .build();
 
-        JwsHeader jwsHeader = JwsHeader.with(() -> "RS256").build();
+        JwsHeader jwsHeader = JwsHeader
+                .with(org.springframework.security.oauth2.jose.jws.SignatureAlgorithm.RS256)
+                .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims))
                 .getTokenValue();
