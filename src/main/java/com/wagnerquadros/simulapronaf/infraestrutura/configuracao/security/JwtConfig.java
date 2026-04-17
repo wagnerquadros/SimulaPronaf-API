@@ -21,20 +21,15 @@ import java.util.Base64;
 @Configuration
 public class JwtConfig {
 
-    @Value("${jwt.private-key-location}")
-    private Resource privateKeyResource;
+    @Value("${jwt.private-key}")
+    private String privateKey;
 
-    @Value("${jwt.public-key-location}")
-    private Resource publicKeyResource;
+    @Value("${jwt.public-key}")
+    private String publicKey;
 
     @Bean
     public RSAPublicKey rsaPublicKey() throws Exception {
-        String key = new String(
-                FileCopyUtils.copyToByteArray(publicKeyResource.getInputStream()),
-                StandardCharsets.UTF_8
-        );
-
-        key = key
+        String key = publicKey
                 .replace("-----BEGIN PUBLIC KEY-----", "")
                 .replace("-----END PUBLIC KEY-----", "")
                 .replaceAll("\\s", "");
@@ -47,12 +42,7 @@ public class JwtConfig {
 
     @Bean
     public RSAPrivateKey rsaPrivateKey() throws Exception {
-        String key = new String(
-                FileCopyUtils.copyToByteArray(privateKeyResource.getInputStream()),
-                StandardCharsets.UTF_8
-        );
-
-        key = key
+        String key = privateKey
                 .replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "")
                 .replace("-----BEGIN RSA PRIVATE KEY-----", "")
