@@ -130,11 +130,10 @@ O schema é gerenciado automaticamente pelo **Flyway** na inicialização da apl
 
 ### Usuários — `/usuarios`
 
-| Método | Endpoint | Descrição | Auth |
-|--------|----------|-----------|------|
-| `GET` | `/usuarios` | Lista todos os usuários | ✅ JWT |
-| `GET` | `/usuarios/{id}` | Busca usuário por ID | ✅ JWT |
-| `POST` | `/usuarios/google` | Busca ou cria usuário a partir dos dados do Google | ✅ JWT |
+| Método | Endpoint       | Descrição                       | Auth |
+|--------|----------------|---------------------------------|------|
+| `GET` | `/usuarios/me` | Retorna dados do usuário logado | ✅ JWT |
+
 
 ---
 
@@ -175,7 +174,22 @@ App Android
 
 ## Como rodar localmente
 
-**Pré-requisitos:** Java 17, Maven, PostgreSQL e uma conta Google Cloud com Client ID OAuth configurado.
+Você pode rodar o projeto de duas formas:
+
+- **modo tradicional**: Java + Maven na máquina
+- **modo containerizado**: usando Docker
+
+### Pré-requisitos
+
+Para rodar sem Docker:
+- Java 17
+- PostgreSQL
+- uma conta Google Cloud com Client ID OAuth configurado
+
+Para rodar com Docker:
+- Docker instalado
+- acesso a um PostgreSQL em execução (local ou remoto)
+- uma conta Google Cloud com Client ID OAuth configurado
 
 ### 1. Clone o repositório
 
@@ -199,15 +213,23 @@ CREATE DATABASE simulapronaf;
 | `DB_PASSWORD` | Senha do PostgreSQL |
 | `GOOGLE_WEB_CLIENT_ID` | Client ID do projeto no Google Cloud |
 
-### 4. Execute
+Exemplo no terminal Linux/macOS:
 
 ```bash
-./mvnw spring-boot:run
+export DB_URL=jdbc:postgresql://localhost:5432/simulapronaf
+export DB_USERNAME=postgres
+export DB_PASSWORD=sua_senha
+export GOOGLE_WEB_CLIENT_ID=seu_client_id.apps.googleusercontent.com
 ```
 
-A API sobe em `http://localhost:8080`. O Flyway aplica as migrations automaticamente.
+No Windows PowerShell:
 
-> **Atenção:** as chaves RSA (`app.key` / `app.pub`) em `src/main/resources/certs/` são necessárias para a assinatura do JWT. Não as remova nem faça commit de chaves reais em produção.
+```powershell
+$env:DB_URL="jdbc:postgresql://localhost:5432/simulapronaf"
+$env:DB_USERNAME="postgres"
+$env:DB_PASSWORD="sua_senha"
+$env:GOOGLE_WEB_CLIENT_ID="seu_client_id.apps.googleusercontent.com"
+```
 
 ### 5. Gere as chaves RSA (obrigatório)
 
@@ -226,6 +248,7 @@ openssl rsa -pubout -in app.key -out app.pub
 Mova os dois arquivos gerados para `src/main/resources/certs/`:
 
 ```bash
+mkdir -p src/main/resources/certs
 mv app.key src/main/resources/certs/
 mv app.pub src/main/resources/certs/
 ```
@@ -233,6 +256,91 @@ mv app.pub src/main/resources/certs/
 > O Spring Boot lê os caminhos `classpath:certs/app.key` e `classpath:certs/app.pub` configurados no `application.properties`. Se os arquivos não existirem, a aplicação falha na inicialização.
 
 > **Nunca versione as chaves reais.** O `.gitignore` já deve ignorar o conteúdo de `certs/` em ambientes de produção. Para desenvolvimento local, as chaves geradas acima são suficientes.
+
+---
+
+### 6. Rodando sem Docker
+
+Execute:
+
+```bash
+./mvnw spring-boot:run
+```
+
+A API sobe em `http://localhost:8080`. O Flyway aplica as migrations automaticamente.
+
+---
+
+### Rodando com Docker
+
+#### 1. Gere a imagem
+
+```bash
+docker build -t simulapronaf-api .
+```
+
+#### 2. Suba o container
+
+```bash
+docker run -p 8080:8080 `
+  -e DB_URL="jdbc:postgresql://host.docker.internal:5432/simulapronaf" `
+  -e DB_USERNAME="postgres" `
+  -e DB_PASSWORD="sua_senha" `
+  -e GOOGLE_WEB_CLIENT_ID="seu-client-id.apps.googleusercontent.com" `
+  -e JWT_PRIVATE_KEY_PATH="/run/secrets/app.key" `
+  -e JWT_PUBLIC_KEY_PATH="/run/secrets/app.pub" `
+  -v D:\simulapronaf\secrets:/run/secrets:ro `
+  simulapronaf-api
+```
+
+Se estiver no Linux e o PostgreSQL estiver rodando na máquina host, o valor de `DB_URL` pode variar conforme sua rede Docker. Em muitos casos, `host.docker.internal` pode não funcionar por padrão.
+
+Uma alternativa comum é usar o IP da máquina host ou rodar o banco em outro container/rede compartilhada.
+
+#### 3. Verifique a aplicação
+
+A API ficará disponível em:
+
+```text
+http://localhost:8080
+```
+
+---
+
+### Comandos úteis com Docker
+
+Parar o container:
+
+```bash
+docker stop simulapronaf-api
+```
+
+Iniciar novamente:
+
+```bash
+docker start simulapronaf-api
+```
+
+Ver logs:
+
+```bash
+docker logs -f simulapronaf-api
+```
+
+Remover container:
+
+```bash
+docker rm -f simulapronaf-api
+```
+
+---
+
+### Observações importantes
+
+- O banco PostgreSQL precisa estar acessível pela aplicação, tanto no modo tradicional quanto no modo Docker.
+- O Flyway aplica as migrations automaticamente na inicialização.
+- O `.dockerignore` evita enviar arquivos desnecessários para o build da imagem.
+- **Nunca versione chaves RSA reais** nem credenciais de banco em produção.
 
 ---
 
