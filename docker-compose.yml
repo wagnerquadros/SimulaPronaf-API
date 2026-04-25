@@ -1,0 +1,11 @@
+services:
+  simulapronaf-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: simulapronaf-api
+    container_name: simulapronaf-api
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env

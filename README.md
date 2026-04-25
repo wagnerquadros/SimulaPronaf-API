@@ -273,29 +273,31 @@ A API sobe em `http://localhost:8080`. O Flyway aplica as migrations automaticam
 
 ### Rodando com Docker
 
-#### 1. Gere a imagem
+#### 1. Configure as variáveis de ambiente
+
+Copie o arquivo de exemplo e preencha com seus valores:
 
 ```bash
-docker build -t simulapronaf-api .
+cp .env.example .env
 ```
 
-#### 2. Suba o container
+Edite o `.env` com suas credenciais reais (banco, Google OAuth, etc).
+
+#### 2. Coloque as chaves JWT na pasta `secrets/`
+
+```
+secrets/
+├── app.key   # chave privada RSA
+└── app.pub   # chave pública RSA
+```
+
+#### 3. Suba o container
 
 ```bash
-docker run -p 8080:8080 `
-  -e DB_URL="jdbc:postgresql://host.docker.internal:5432/simulapronaf" `
-  -e DB_USERNAME="postgres" `
-  -e DB_PASSWORD="sua_senha" `
-  -e GOOGLE_WEB_CLIENT_ID="seu-client-id.apps.googleusercontent.com" `
-  -e JWT_PRIVATE_KEY_PATH="/run/secrets/app.key" `
-  -e JWT_PUBLIC_KEY_PATH="/run/secrets/app.pub" `
-  -v D:\simulapronaf\secrets:/run/secrets:ro `
-  simulapronaf-api
+docker compose up --build
 ```
 
-Se estiver no Linux e o PostgreSQL estiver rodando na máquina host, o valor de `DB_URL` pode variar conforme sua rede Docker. Em muitos casos, `host.docker.internal` pode não funcionar por padrão.
-
-Uma alternativa comum é usar o IP da máquina host ou rodar o banco em outro container/rede compartilhada.
+> Se estiver no Linux e o PostgreSQL estiver rodando na máquina host, `host.docker.internal` pode não funcionar por padrão. Uma alternativa é usar o IP da interface Docker (`172.17.0.1`) ou rodar o banco em um container na mesma rede.
 
 #### 3. Verifique a aplicação
 

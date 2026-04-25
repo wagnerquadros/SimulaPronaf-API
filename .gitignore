@@ -13,7 +13,6 @@ src/main/resources/certs/*.p12
 src/main/resources/certs/*.jks
 src/main/resources/certs/*.keystore
 .env
-.env.*
 application-local.properties
 application-local.yml
 application-secrets.properties
